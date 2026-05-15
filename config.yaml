@@ -1,0 +1,254 @@
+# Protein Interaction Visualizer - Configuration
+# =================================================
+# This file controls all parameters for data fetching, analysis,
+# visualization, and model training.
+#
+# Override defaults by:
+#   - Editing this file
+#   - Creating a local config_local.yaml (gitignored)
+#   - Setting environment variables (e.g., STRING_API_KEY)
+
+# -------------------------------------------
+# Data Acquisition
+# -------------------------------------------
+data:
+  # STRING Database Settings
+  string:
+    # STRING API endpoint (default: v12.0)
+    api_version: "v12.0"
+    # Default organism: Human (taxid=9606)
+    # Other common organisms: mouse=10090, rat=10116, yeast=4932
+    default_organism: "9606"
+    # Minimum interaction score threshold (0-1000)
+    # STRING scores: 150 (low), 400 (medium), 700 (high), 900 (highest)
+    score_threshold: 400
+    # Number of paralog proteins to include (0 = none)
+    max_paralogs: 0
+    # Required interaction types (optional filter):
+    #   "gtb" (gene fusion), "hib" (homology), "ppi" (experimental),
+    #   "cbi" (coexpression), "exp" (coexpression), "td" (text mining)
+    # If empty, all types included
+    interaction_types: []
+
+  # BioGRID Settings
+  biogrid:
+    # BioGRID ORCS endpoint for experimentally verified interactions
+    # Access: public, no API key needed (but rate-limited)
+    use_both_databases: true  # Merge STRING + BioGRID for higher coverage
+    # Evidence types to keep (from BioGRID):
+    #   "Experimental", "Co-Expression", "Co-Purification", etc.
+    evidence_types: ["Experimental"]
+
+  # Local datasets (add your own .csv files here)
+  local:
+    enabled: false
+    file_paths: []
+
+# -------------------------------------------
+# Network Analysis
+# -------------------------------------------
+network:
+  # Graph construction
+  graph:
+    # Treat as undirected (most PPIs are symmetric)
+    undirected: true
+    # Remove self-loops (protein interacting with itself)?
+    remove_self_loops: true
+    # Keep largest connected component? (true = drop isolated proteins)
+    largest_cc_only: true
+
+  # Centrality measures to compute
+  centrality:
+    compute_degree: true
+    compute_betweenness: true  # Slow for large networks
+    compute_closeness: true
+    compute_eigenvector: true
+    compute_katz: false  # Alternative eigenvector; slower
+
+  # Community detection
+  community:
+    algorithm: "louvain"  # Options: "louvain", "girvan_newman", "label_propagation"
+    resolution: 1.0  # For louvain: higher = more communities
+
+# -------------------------------------------
+# Visualization
+# -------------------------------------------
+visualization:
+  # Node styling
+  nodes:
+    # Default node size based on degree (if degree data available)
+    min_size: 10
+    max_size: 50
+    # Color palette for clusters/communities
+    colormap: "plotly3"  # Plotly qualitative palette: plotly3, set2, etc.
+    # Show node labels? (large networks -> false)
+    show_labels: true
+    label_font_size: 10
+
+  # Edge styling
+  edges:
+    # Edge width scale: higher = thicker edges for high-confidence interactions
+    width_scale: 2.0
+    # Show edge labels (interaction score)? Typically false for large networks
+    show_labels: false
+    # Color edges by confidence? Gradient from red (low) to green (high)
+    color_by_confidence: true
+
+  # Layout algorithm
+  layout:
+    # Options: "fr" (Fruchterman-Reingold), "kk" (Kamada-Kawai),
+    #          "circle", "spring", "spectral"
+    algorithm: "fr"
+    # Number of iterations (higher = better layout but slower)
+    iterations: 1000
+    # 3D layout? (requires plotly and z-coordinates)
+    three_dimensional: false
+
+  # Interactive plot settings (Plotly)
+  interactive:
+    # Enable physics simulation in browser? (slow for large networks)
+    enable_physics: false
+    # Background color
+    bgcolor: "#0d1117"  # GitHub dark mode
+    # Node hover text format
+    hover_template: "%{text}<extra></extra>"
+
+# -------------------------------------------
+# Machine Learning Prediction
+# -------------------------------------------
+prediction:
+  # Feature generation
+  features:
+    # Use protein sequence embeddings? (requires BioPython)
+    use_sequence_features: false  # Optional: would require loading sequences
+    # Use network topology features (degree, clustering, etc.)
+    use_network_features: true
+    # Use gene ontology (GO) term similarity? (requires goatools)
+    use_go_similarity: false
+    # Use domain-domain interaction scores? (from Pfam)
+    use_domain_features: false
+
+  # Model selection
+  model:
+    algorithm: "random_forest"  # Options: "random_forest", "gradient_boosting", "logistic_regression"
+    # Random Forest parameters
+    n_estimators: 200
+    max_depth: 20
+    min_samples_split: 10
+    random_state: 42  # For reproducibility
+
+  # Training
+  training:
+    test_size: 0.2
+    validation_size: 0.1  # of training set
+    cv_folds: 5  # Cross-validation folds
+    # Handle class imbalance (few positive examples usually)
+    class_weight: "balanced"
+    # Positive class: edges in original network
+    # Negative class: randomly sampled non-edges (same count as positives)
+    neg_ratio: 1.0  # # negative samples = # positive * neg_ratio
+
+  # Evaluation
+  evaluation:
+    metrics: ["accuracy", "precision", "recall", "f1", "auroc", "auprc"]
+    # Save confusion matrix plot?
+    plot_confusion_matrix: true
+    # Save ROC and Precision-Recall curves?
+    plot_curves: true
+
+# -------------------------------------------
+# Output & Logging
+# -------------------------------------------
+output:
+  # Figure formats
+  figures:
+    formats: ["html", "png", "svg"]  # html = interactive
+    dpi: 300  # For raster formats (png)
+    width: 1200
+    height: 800
+
+  # Data output
+  data:
+    # Save network as Pickle (NetworkX) + edgelist (CSV)
+    save_pickle: true
+    save_edgelist: true
+    # Include protein attributes (degree, betweenness, community)?
+    save_attributes: true
+
+  # Results
+  results:
+    # Save model predictions (probabilities)?
+    save_predictions: true  # CSV with protein1, protein2, score
+    # Save feature importance (if model supports)?
+    save_feature_importance: true
+
+# -------------------------------------------
+# Paths
+# -------------------------------------------
+paths:
+  # Data directories (relative to project root)
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  results_figures: "results/figures"
+  results_predictions: "results/predictions"
+  models_dir: "models"
+  logs_dir: "logs"
+
+# -------------------------------------------
+# API Keys & Secrets (override via environment)
+# -------------------------------------------
+# Never commit real keys. Use .env file or export env vars.
+# Example .env:
+#   STRING_API_KEY=your_key_here
+#   BIOGRID_USERNAME=your_username
+#
+# Keys are optional for public endpoints (rate-limited).
+# Get STRING key: https://string-db.org/cgi/access?section=api
+api_keys:
+  string: null  # Set STRING_API_KEY env var or put key here (not recommended)
+  biogrid: null
+
+# -------------------------------------------
+# Debugging & Development
+# -------------------------------------------
+debug:
+  # Logging level: DEBUG, INFO, WARNING, ERROR
+  log_level: "INFO"
+  # Save intermediate data? Useful for debugging pipelines
+  save_intermediates: false
+  # Random seed for reproducibility
+  random_seed: 42
+
+# ===========================================
+# Notes on Reproducibility
+# ===========================================
+# 1. Data versioning:
+#    - Raw files include timestamp in filename: human_ppi_{timestamp}.csv
+#    - Processed files include fetcher version: human_ppi_v1.2.csv
+#
+# 2. Code versioning:
+#    - Git commit hash recorded in data/processed/metadata.json
+#
+# 3. Environment:
+#    - Python version recorded in environment.yml (if using conda)
+#    - pip freeze > requirements.lock for exact pins
+#
+# 4. Seeds:
+#    - All random operations seeded with config.debug.random_seed
+#
+# 5. Deterministic operations:
+#    - NetworkX graph operations (with fixed random_state)
+#    - scikit-learn estimators set random_state
+#    - NumPy RNG seeded globally
+#
+# To fully reproduce:
+#   $ git clone <repo>
+#   $ cd protein-interaction-visualizer
+#   $ conda create -n ppi python=3.10
+#   $ conda activate ppi
+#   $ pip install -r requirements.txt
+#   $ python -m src.data_acquisition.string_fetcher
+#   $ python -m src.visualization.network_viz
+#
+# All output files will have timestamps. To compare runs,
+# check the metadata.json in data/processed/.

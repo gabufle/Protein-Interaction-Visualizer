@@ -1,0 +1,100 @@
+# Python dependencies for Protein Interaction Visualizer & Predictor
+# Pin exact versions for reproducible environments.
+#
+# Installation:
+#   pip install -r requirements.txt
+#
+# Notes:
+#   - Python 3.9+ recommended (tested on 3.10-3.12)
+#   - For faster ML: install scikit-learn with OpenMP support:
+#       conda install scikit-learn  # or use pip with compiled wheels
+#   - Optional: jupyterlab for notebooks
+
+# ============================================
+# Core Scientific Stack (compatible versions)
+# ============================================
+numpy>=1.24.0,<2.0
+pandas>=2.0.0,<3.0
+scipy>=1.10.0,<2.0
+
+# ============================================
+# Network Science
+# ============================================
+networkx>=3.0,<4.0  # Graph data structures and algorithms
+
+# ============================================
+# Machine Learning
+# ============================================
+scikit-learn>=1.3.0,<2.0  # Classical ML models
+# For deep learning (optional, uncomment if needed):
+# torch>=2.0.0,<3.0
+# torch-geometric>=2.3.0  # For graph neural networks
+
+# ============================================
+# Visualization
+# ============================================
+plotly>=5.14.0,<6.0  # Interactive plots (HTML/JS)
+matplotlib>=3.7.0,<4.0  # Static plots (fallback, publication quality)
+seaborn>=0.12.0,<1.0  # Statistical visualization styling
+# pygraphviz (optional, for fast graphviz layouts):
+#   Requires system install: apt-get install graphviz graphviz-dev
+#   pip install pygraphviz
+
+# ============================================
+# Data Fetching & APIs
+# ============================================
+requests>=2.30.0,<3.0  # HTTP client (STRING, BioGRID APIs)
+python-dotenv>=1.0.0,<2.0  # Load API keys from .env file
+
+# ============================================
+# Biology-specific (optional, for sequence features)
+# ============================================
+biopython>=1.81,<2.0  # BioPython: sequence parsing, GenBank, etc.
+# goatools>=0.1.9  # Gene Ontology analysis (uncomment if using GO features)
+# gseapy>=1.0.6  # Gene set enrichment (optional)
+
+# ============================================
+# Data Management
+# ============================================
+pyyaml>=6.0,<7.0  # Config files (config.yaml)
+joblib>=1.3.0,<2.0  # Model serialization, parallel processing
+tqdm>=4.65.0,<5.0  # Progress bars
+
+# ============================================
+# Development & Testing
+# ============================================
+pytest>=7.4.0,<8.0  # Unit testing
+pytest-cov>=4.1.0,<5.0  # Coverage plugin
+black>=23.0.0,<24.0  # Code formatting
+flake8>=6.0.0,<7.0  # Linting
+mypy>=1.4.0,<2.0  # Type checking
+
+# ============================================
+# Notebooks & Documentation
+# ============================================
+jupyterlab>=4.0.0,<5.0  # Jupyter notebooks (interactive exploration)
+ipykernel>=6.25.0,<7.0  # IPython kernel for notebooks
+nbconvert>=7.7.0,<8.0  # Convert notebooks to HTML/PDF
+
+# ============================================
+# Optional but Useful
+# ============================================
+colorlog>=6.7.0,<7.0  # Colored terminal logging
+python-dateutil>=2.8.0,<3.0  # Date parsing for API results
+
+# ============================================
+# Version Pinning Notes
+# ============================================
+# We use < restrictions to allow bugfix updates while avoiding
+# breaking changes from major version bumps.
+#
+# To exactly reproduce environment on another machine:
+#   1. Create venv: python -m venv venv
+#   2. Install: pip install -r requirements.txt
+#   3. Verify: pip freeze > frozen_requirements.txt
+#      (commit this file for absolute reproducibility)
+#
+# Platform-specific notes:
+#   - MacOS: brew install graphviz  (if using pygraphviz)
+#   - Ubuntu/Debian: apt-get install graphviz graphviz-dev
+#   - Windows: conda install -c conda-forge pygraphviz

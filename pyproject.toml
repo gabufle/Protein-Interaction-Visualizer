@@ -1,0 +1,148 @@
+[build-system]
+# Build dependencies and backend (PEP 517/518)
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# Core metadata (PEP 621)
+name = "protein-interaction-visualizer"
+version = "0.1.0"
+description = "A toolkit for fetching, visualizing, and predicting protein-protein interactions from real databases (STRING, BioGRID)"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.9,<3.14"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}  # TODO: Replace
+]
+keywords = [
+    "bioinformatics",
+    "protein-protein-interactions",
+    "network-analysis",
+    "visualization",
+    "machine-learning",
+    "biology",
+    "ppi",
+    "string-db",
+    "biogrid",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "numpy>=1.24.0,<2.0",
+    "pandas>=2.0.0,<3.0",
+    "scipy>=1.10.0,<2.0",
+    "networkx>=3.0,<4.0",
+    "scikit-learn>=1.3.0,<2.0",
+    "plotly>=5.14.0,<6.0",
+    "matplotlib>=3.7.0,<4.0",
+    "seaborn>=0.12.0,<1.0",
+    "requests>=2.30.0,<3.0",
+    "python-dotenv>=1.0.0,<2.0",
+    "pyyaml>=6.0,<7.0",
+    "joblib>=1.3.0,<2.0",
+    "tqdm>=4.65.0,<5.0",
+    "biopython>=1.81,<2.0",
+    "colorlog>=6.7.0,<7.0",
+    "python-dateutil>=2.8.0,<3.0",
+]
+
+[project.optional-dependencies]
+# Optional features that can be installed via: pip install .[dev]
+dev = [
+    "pytest>=7.4.0,<8.0",
+    "pytest-cov>=4.1.0,<5.0",
+    "black>=23.0.0,<24.0",
+    "flake8>=6.0.0,<7.0",
+    "mypy>=1.4.0,<2.0",
+]
+notebooks = [
+    "jupyterlab>=4.0.0,<5.0",
+    "ipykernel>=6.25.0,<7.0",
+    "nbconvert>=7.7.0,<8.0",
+]
+graphviz = [
+    "pygraphviz>=1.11; platform_system!='Windows'",  # Requires system graphviz
+]
+deep-learning = [
+    "torch>=2.0.0,<3.0",
+    "torch-geometric>=2.3.0",
+]
+bio = [
+    "goatools>=0.1.9",
+    "gseapy>=1.0.6",
+]
+
+[project.scripts]
+# Console script entry points (installed to PATH)
+ppi-fetch = "src.data_acquisition.string_fetcher:main"
+ppi-viz = "src.visualization.network_viz:main"
+ppi-predict = "src.prediction.interaction_predictor:main"
+ppi-analyze = "src.network_analysis.graph_analyzer:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["src*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py39']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--cov=src --cov-report=term-missing --cov-report=html --verbose"
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*", "*/test_*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "pass",
+    "raise ImportError",
+]

@@ -1,0 +1,60 @@
+# pre-commit configuration
+# Run `pre-commit install` to set up hooks on git commit
+#
+# Hooks run on staged files before each commit.
+# Failures block commit until fixed (or use --no-verify to skip).
+#
+# Manual run: pre-commit run --all-files
+
+repos:
+  - repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+      - id: black
+        language_version: python3
+        args: [--line-length=100]
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile", "black", "--line-length=100"]
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.1.1
+    hooks:
+      - id: flake8
+        additional_dependencies: [flake8-bugbear==24.8.19]
+        args: [--max-line-length=100, --select=B,C,E,F,W,T,B950]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.14.1
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-requests, types-pyYAML, types-tqdm]
+        args: [--ignore-missing-imports, --strict]
+        # NOTE: mypy optional; remove if it's blocking
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-added-large-files      # Prevent huge binaries
+        args: ['--maxkb=500']
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+
+  # Optional: pytest --maxfail=1 to catch breaking changes early
+  - repo: local
+    hooks:
+      - id: pytest-smoke
+        name: pytest (smoke)
+        entry: pytest tests/ -x --maxfail=1 -q
+        language: system
+        pass_filenames: false
+        always_run: false        # only run if tests changed (via files arg)
+        # You can also use `files: \.py$` to auto-trigger

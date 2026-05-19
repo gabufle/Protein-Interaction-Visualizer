@@ -1,0 +1,59 @@
+[
+  {
+    "dataset": "TP53",
+    "nodes": 200,
+    "edges": 600,
+    "density": 0.030151,
+    "accuracy": 0.8583,
+    "roc_auc": 0.8969,
+    "cm": [
+      [
+        110,
+        10
+      ],
+      [
+        24,
+        96
+      ]
+    ],
+    "num_hubs": 5
+  },
+  {
+    "dataset": "PRNP",
+    "nodes": 200,
+    "edges": 600,
+    "density": 0.030151,
+    "accuracy": 0.8583,
+    "roc_auc": 0.8969,
+    "cm": [
+      [
+        110,
+        10
+      ],
+      [
+        24,
+        96
+      ]
+    ],
+    "num_hubs": 5
+  },
+  {
+    "dataset": "LYZ",
+    "nodes": 200,
+    "edges": 600,
+    "density": 0.030151,
+    "accuracy": 0.8583,
+    "roc_auc": 0.8969,
+    "cm": [
+      [
+        110,
+        10
+      ],
+      [
+        24,
+        96
+      ]
+    ],
+    "num_hubs": 5
+  }
+]

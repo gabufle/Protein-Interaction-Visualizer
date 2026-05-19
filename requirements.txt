@@ -82,6 +82,11 @@ nbconvert>=7.7.0,<8.0  # Convert notebooks to HTML/PDF
 colorlog>=6.7.0,<7.0  # Colored terminal logging
 python-dateutil>=2.8.0,<3.0  # Date parsing for API results
 
+# Web Server & API
+fastapi>=0.100.0,<1.0  # REST API framework
+uvicorn[standard]>=0.23.0,<1.0  # ASGI server
+python-multipart>=0.0.6,<1.0  # Form parsing
+
 # ============================================
 # Version Pinning Notes
 # ============================================

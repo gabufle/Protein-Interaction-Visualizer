@@ -1,3 +1,5 @@
+```text
+
 .
 ├── src/                   # Source code (modular, testable)
 │   ├── data_acquisition/  # Fetch PPI data from STRING, BioGRID, etc.
